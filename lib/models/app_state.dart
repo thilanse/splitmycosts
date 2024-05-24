@@ -55,4 +55,10 @@ class AppState extends ChangeNotifier{
     _expenses.add(expense);
     notifyListeners();
   }
+
+  void removeExpenseByIndex(int index) {
+    _expenses[index].removeAllContributions();
+    _expenses.removeAt(index);
+    notifyListeners();
+  }
 }

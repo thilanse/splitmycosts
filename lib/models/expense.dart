@@ -17,5 +17,11 @@ class Expense {
     _contributions[index].updateContributedAmount(newAmount);
   }
 
+  void removeAllContributions() {
+    for (Contribution contribution in _contributions) {
+      contribution.updateContributedAmount(0.0);
+    }
+  }
+
   double get totalCost => _contributions.fold<double>(0, (prev, value) => prev + value.contributedAmount);
 }

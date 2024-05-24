@@ -102,7 +102,7 @@ class ExpenseListSection extends StatelessWidget {
           return ListView.separated(
             shrinkWrap: true,
             itemBuilder: (BuildContext context, int index) {
-              return ExpenseItem(expense: appState.expenses[index],);
+              return ExpenseItem(expense: appState.expenses[index], index: index);
             }, 
             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
             itemCount: appState.expenses.length
@@ -116,10 +116,12 @@ class ExpenseListSection extends StatelessWidget {
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem({
     super.key,
-    required this.expense
+    required this.expense,
+    required this.index,
   });
 
   final Expense expense;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +132,7 @@ class ExpenseItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ExpenseItemHeader(expense: expense),
+          ExpenseItemHeader(expense: expense, index: index,),
           const SizedBox(height: 10.0,),
           ExpenseItemContributionSection(expense: expense),
         ],
@@ -142,9 +144,11 @@ class ExpenseItemHeader extends StatelessWidget {
   const ExpenseItemHeader({
     super.key,
     required this.expense,
+    required this.index,
   });
 
   final Expense expense;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -155,10 +159,11 @@ class ExpenseItemHeader extends StatelessWidget {
         Row(
           children: [
             SizedBox(width: 120.0, child: Text("Total Cost: ${expense.totalCost.toString()}")),
-            SizedBox(width: 5.0,),
+            const SizedBox(width: 5.0,),
             IconButton(
               onPressed: () {
-                print("delete");
+                var appState = context.read<AppState>();
+                appState.removeExpenseByIndex(index);
               },
               icon: const Icon(
                 Icons.delete,
