@@ -91,11 +91,7 @@ class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
         padding: const EdgeInsets.all(30.0),
         child: Column(
           children: [
-            ContributorSection(
-                contributors: contributors,
-                addContributor: _addContributor,
-                deleteContributor: _deleteContributor,
-                controller: _contributorController),
+            ContributorSection(deleteContributor: _deleteContributor,),
             const SizedBox(
               height: 20.0,
             ),

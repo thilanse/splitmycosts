@@ -6,16 +6,10 @@ import 'package:splitmycosts/models/contributor.dart';
 class ContributorSection extends StatelessWidget {
   const ContributorSection({
     super.key,
-    required this.contributors,
-    required this.addContributor,
     required this.deleteContributor,
-    required this.controller,
   });
 
-  final List<String> contributors;
-  final void Function() addContributor;
   final void Function(String) deleteContributor;
-  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +27,7 @@ class ContributorSection extends StatelessWidget {
         const SizedBox(
           height: 10.0,
         ),
-        AddItemSection(
-          controller: controller,
-          addBtnCallback: addContributor,
-          inputLabel: "Add contributor...",
-        ),
+        const AddItemSection(),
         const SizedBox(
           height: 10.0,
         ),
@@ -98,14 +88,8 @@ class ContributorItem extends StatelessWidget {
 class AddItemSection extends StatefulWidget {
   const AddItemSection({
     super.key,
-    required this.controller,
-    required this.addBtnCallback,
-    required this.inputLabel,
   });
 
-  final TextEditingController controller;
-  final void Function() addBtnCallback;
-  final String inputLabel;
 
   @override
   State<AddItemSection> createState() => _AddItemSectionState();
@@ -139,7 +123,7 @@ class _AddItemSectionState extends State<AddItemSection> {
               onSubmitted: (_) {addItem(context);},
               style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
-                hintText: widget.inputLabel,
+                hintText: "Add contributor...",
                 contentPadding: const EdgeInsets.all(10.0),
                 isDense: true,
                 border: OutlineInputBorder(
