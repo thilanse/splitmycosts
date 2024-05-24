@@ -5,16 +5,8 @@ import 'package:splitmycosts/models/expense.dart';
 
 class AppState extends ChangeNotifier{
 
-  final List<Contributor> _contributors = [
-    Contributor("Thilan"), Contributor("Bula")
-  ];
+  final List<Contributor> _contributors = [];
   final List<Expense> _expenses = [];
-
-  AppState() {
-    addExpense("Fuel");
-    addExpense("Dinner");
-    addExpense("Hotel");
-  }
 
   List<Contributor> get contributors => _contributors;
 
