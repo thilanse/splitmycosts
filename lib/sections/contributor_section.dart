@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
-import 'package:splitmycosts/models/contributor.dart';
 
 class ContributorSection extends StatelessWidget {
   const ContributorSection({
@@ -61,12 +60,16 @@ class _ContributorAddSectionState extends State<ContributorAddSection> {
 
   final _controller = TextEditingController();
   final String inputLabel = "Add contributor...";
+  String? errorMessage;
 
   void addContributor(BuildContext context) {
     var appState = context.read<AppState>();
     final String contributorName = _controller.text;
-    Contributor contributor = Contributor(contributorName: contributorName);
-    appState.addContributor(contributor);
+
+    setState(() {
+      errorMessage = appState.addContributor(contributorName);
+    });
+    
     _controller.clear();
   }
 
@@ -76,6 +79,7 @@ class _ContributorAddSectionState extends State<ContributorAddSection> {
       inputLabel: inputLabel,
       controller: _controller,
       addBtnCallback: addContributor,
+      errorMessage: errorMessage
       );
   }
 }

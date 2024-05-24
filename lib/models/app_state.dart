@@ -3,19 +3,21 @@ import 'package:splitmycosts/models/contributor.dart';
 
 class AppState extends ChangeNotifier{
 
-  final List<Contributor> _contributors = [
-    Contributor(contributorName: "Thilan"),
-    Contributor(contributorName: "Bula"),
-    Contributor(contributorName: "Shasi"),
-  ];
+  final List<Contributor> _contributors = [];
 
   List<Contributor> get contributors => _contributors;
 
-  void addContributor(Contributor contributor) {
-    if (!_contributors.contains(contributor)){
-      _contributors.add(contributor);
-      notifyListeners();
+  String? addContributor(String contributorName) {
+    bool alreadyExists = _contributors.any((c) => c.contributorName == contributorName);
+    
+    if (alreadyExists){
+      return "$contributorName already added!";
     }
+
+    Contributor contributor = Contributor(contributorName: contributorName);
+    _contributors.add(contributor);
+    notifyListeners();
+    return null;
   }
 
   void removeContributor(String contributorName) {
