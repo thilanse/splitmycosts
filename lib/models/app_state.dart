@@ -74,6 +74,16 @@ class AppState extends ChangeNotifier{
 
   void updateContributionAmount(int expenseIndex, int contributionIndex, double newAmount) {
     _expenses[expenseIndex].contributions[contributionIndex].updateContributedAmount(newAmount);
+    for(Contributor contributor in _contributors) {
+      contributor.resetTotalCost();
+    }
+    for(Expense expense in _expenses){
+      for(Contribution contribution in expense.contributions) {
+        if (contribution.hasContributed) {
+          contribution.contributor.updateTotalCost(expense.costPerPerson);
+        }
+      }
+    }
     notifyListeners();
   }
 }

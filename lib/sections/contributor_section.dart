@@ -133,6 +133,8 @@ class ContributorItem extends StatelessWidget {
         Text(contributor.contributorName),
         const Spacer(),
         Text("Total Spent: ${contributor.totalSpent}"),
+        const SizedBox(width: 10.0),
+        Text("Total Cost: ${contributor.totalCost}"),
       ],
     );
   }
