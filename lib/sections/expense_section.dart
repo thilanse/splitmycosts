@@ -137,8 +137,30 @@ class ExpenseItem extends StatelessWidget {
           ExpenseItemHeader(expense: expense, index: index,),
           const SizedBox(height: 10.0,),
           ExpenseItemContributionSection(expense: expense, expenseIndex: index),
+          const SizedBox(height: 10.0,),
+          ExpenseItemDetails(expense: expense)
         ],
       ));
+  }
+}
+
+class ExpenseItemDetails extends StatelessWidget {
+  const ExpenseItemDetails({
+    super.key,
+    required this.expense,
+  });
+
+  final Expense expense;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Number of participants: ${expense.participants}"),
+        Text("Cost per person: ${expense.costPerPerson.toString()}"),
+      ],
+    );
   }
 }
 

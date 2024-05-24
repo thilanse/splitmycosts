@@ -24,4 +24,10 @@ class Expense {
   }
 
   double get totalCost => _contributions.fold<double>(0, (prev, value) => prev + value.contributedAmount);
+
+  int get participants => _contributions.where((c) => c.hasContributed).length;
+
+  double get costPerPerson {
+    return (participants > 0)? totalCost / participants: 0.0;
+  }
 }
