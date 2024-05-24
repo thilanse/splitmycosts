@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
 import 'package:splitmycosts/models/contributor.dart';
 
@@ -13,93 +14,55 @@ class ContributorSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Contributors"),
-        const SizedBox(
-          height: 10.0,
-        ),
-        const Text(
-          "Contributors are all participants taking part in the event. For example, they can be all those going on a trip. The expenses will be split among all the contributors.",
-          softWrap: true,
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        const AddItemSection(),
-        const SizedBox(
-          height: 10.0,
-        ),
-        SizedBox(
-          height: 100.0,
-          child: Consumer<AppState>(builder: (context, appState, child) {
-            return ListView.separated(
-                itemBuilder: (BuildContext context, int index) {
-                  return ContributorItem(
-                      name: appState.contributors[index].contributorName,
-                      deleteContributor: deleteContributor);
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(height: 5.0),
-                itemCount: appState.contributors.length);
-          }),
-        )
-        // ...contributors.map((e) => ContributorItem(name: e, deleteContributor: deleteContributor)),
+        ContributorDetailsSection(),
+        SizedBox(height: 10.0,),
+        ContributorAddSection(),
+        SizedBox(height: 10.0,),
+        ContributorListSection()
       ],
     );
   }
 }
 
-class ContributorItem extends StatelessWidget {
-  const ContributorItem({
+class ContributorDetailsSection extends StatelessWidget {
+  const ContributorDetailsSection({
     super.key,
-    required this.name,
-    required this.deleteContributor,
   });
-
-  final String name;
-  final void Function(String) deleteContributor;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IconButton(
-          onPressed: () {
-            deleteContributor(name);
-          },
-          icon: const Icon(
-            Icons.delete,
-            // size: 15.0,
-          ),
-          color: Colors.red,
-          iconSize: 15.0,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 20.0, minHeight: 20.0),
+        Text("Contributors"),
+        SizedBox(height: 10.0,),
+        Text(
+          "Contributors are all participants taking part in the event. For example, they can be all those going on a trip. The expenses will be split among all the contributors.",
+          softWrap: true,
         ),
-        const SizedBox(width: 10.0),
-        Text(name),
       ],
     );
   }
 }
 
-class AddItemSection extends StatefulWidget {
-  const AddItemSection({
+class ContributorAddSection extends StatefulWidget {
+  const ContributorAddSection({
     super.key,
   });
 
-
   @override
-  State<AddItemSection> createState() => _AddItemSectionState();
+  State<ContributorAddSection> createState() => _ContributorAddSectionState();
 }
 
-class _AddItemSectionState extends State<AddItemSection> {
-  final _controller = TextEditingController();
-  final double borderRadius = 5.0;
+class _ContributorAddSectionState extends State<ContributorAddSection> {
 
-  void addItem(BuildContext context) {
+  final _controller = TextEditingController();
+  final String inputLabel = "Add contributor...";
+
+  void addContributor(BuildContext context) {
     var appState = context.read<AppState>();
     final String contributorName = _controller.text;
     Contributor contributor = Contributor(contributorName: contributorName);
@@ -109,41 +72,61 @@ class _AddItemSectionState extends State<AddItemSection> {
 
   @override
   Widget build(BuildContext context) {
+    return AddItemSection(
+      inputLabel: inputLabel,
+      controller: _controller,
+      addBtnCallback: addContributor,
+      );
+  }
+}
+
+class ContributorListSection extends StatelessWidget {
+  const ContributorListSection({super.key,});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100.0,
+      child: Consumer<AppState>(builder: (context, appState, child) {
+        return ListView.separated(
+            itemBuilder: (BuildContext context, int index) {
+              return ContributorItem(name: appState.contributors[index].contributorName,);
+            },
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(height: 5.0),
+            itemCount: appState.contributors.length);
+      }),
+    );
+  }
+}
+
+class ContributorItem extends StatelessWidget {
+  const ContributorItem({
+    super.key,
+    required this.name,
+  });
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(
-          child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: 200.0,
-              minWidth: 50.0,
-            ),
-            child: TextField(
-              controller: _controller,
-              onSubmitted: (_) {addItem(context);},
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: "Add contributor...",
-                contentPadding: const EdgeInsets.all(10.0),
-                isDense: true,
-                border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(borderRadius))),
-              ),
-            ),
+        IconButton(
+          onPressed: () {
+            var appState = context.read<AppState>();
+            appState.removeContributor(name);
+          },
+          icon: const Icon(
+            Icons.delete,
           ),
+          color: Colors.red,
+          iconSize: 15.0,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 20.0, minHeight: 20.0),
         ),
-        const SizedBox(
-          width: 10.0,
-        ),
-        FilledButton(
-          onPressed: () {addItem(context);},
-          style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(borderRadius)))),
-          child: const Text("Add"),
-        ),
+        const SizedBox(width: 10.0),
+        Text(name),
       ],
     );
   }

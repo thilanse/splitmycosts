@@ -28,11 +28,11 @@ class ExpenseSection extends StatelessWidget {
         const SizedBox(
           height: 10.0,
         ),
-        AddItemSection(
-          controller: controller,
-          addBtnCallback: addExpense,
-          inputLabel: "Add expense...",
-        ),
+        // AddItemSection(
+        //   controller: controller,
+        //   addBtnCallback: addExpense,
+        //   inputLabel: "Add expense...",
+        // ),
         const SizedBox(
           height: 10.0,
         ),

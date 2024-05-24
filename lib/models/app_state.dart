@@ -18,10 +18,13 @@ class AppState extends ChangeNotifier{
     }
   }
 
-  void removeContributor(Contributor contributor) {
-    if (_contributors.contains(contributor)) {
-      _contributors.remove(contributor);
-      notifyListeners();
+  void removeContributor(String contributorName) {
+    for (Contributor contributor in _contributors){
+      if (contributor.contributorName == contributorName){
+        _contributors.remove(contributor);
+        notifyListeners();
+        break;
+      }
     }
   }
 }

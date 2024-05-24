@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:splitmycosts/models/app_state.dart';
-import 'package:splitmycosts/models/contributor.dart';
 
-class AddItemSection extends StatefulWidget {
+class AddItemSection extends StatelessWidget {
   const AddItemSection({
     super.key,
+    required this.inputLabel,
     required this.controller,
     required this.addBtnCallback,
-    required this.inputLabel,
   });
 
-  final TextEditingController controller;
-  final void Function() addBtnCallback;
   final String inputLabel;
+  final TextEditingController controller;
+  final void Function(BuildContext) addBtnCallback;
 
-  @override
-  State<AddItemSection> createState() => _AddItemSectionState();
-}
-
-class _AddItemSectionState extends State<AddItemSection> {
-
-  final _controller = TextEditingController();
   final double borderRadius = 5.0;
 
   @override
@@ -36,13 +26,11 @@ class _AddItemSectionState extends State<AddItemSection> {
               minWidth: 50.0,
             ),
             child: TextField(
-              controller: _controller,
-              onSubmitted: (_) {
-                widget.addBtnCallback();
-              },
+              controller: controller,
+              onSubmitted: (_) {addBtnCallback(context);},
               style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
-                hintText: widget.inputLabel,
+                hintText: inputLabel,
                 contentPadding: const EdgeInsets.all(10.0),
                 isDense: true,
                 border: OutlineInputBorder(
@@ -56,14 +44,7 @@ class _AddItemSectionState extends State<AddItemSection> {
           width: 10.0,
         ),
         FilledButton(
-          onPressed: () {
-            var appState = context.read<AppState>();
-            final String contributorName = _controller.text;
-            Contributor contributor = Contributor(contributorName: contributorName);
-            appState.addContributor(contributor);
-          
-            // widget.addBtnCallback();
-          },
+          onPressed: () {addBtnCallback(context);},
           style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
                   borderRadius:
