@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
+import 'package:splitmycosts/models/app_state.dart';
+import 'package:splitmycosts/models/expense.dart';
 
 class ExpenseSection extends StatelessWidget {
   const ExpenseSection(
@@ -16,14 +19,104 @@ class ExpenseSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const ExpenseDetailsSection(),
-        const SizedBox(height: 10.0,),
-        const ExpenseAddSection(),
-        const SizedBox(height: 10.0,),
-        ...expenses.map((e) => Text(e))
+        ExpenseDetailsSection(),
+        SizedBox(height: 10.0,),
+        ExpenseAddSection(),
+        SizedBox(height: 10.0,),
+        ExpenseListSection(),
+      ],
+    );
+  }
+}
+
+class ExpenseListSection extends StatelessWidget {
+  const ExpenseListSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: Consumer<AppState>(builder: (context, appState, child) {
+        return ListView.separated(
+          itemBuilder: (BuildContext context, int index) {
+            return ExpenseItem(expense: appState.expenses[index],);
+          }, 
+          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
+          itemCount: appState.expenses.length
+          );
+      },),
+    );
+  }
+}
+
+class ExpenseItem extends StatelessWidget {
+  const ExpenseItem({
+    super.key,
+    required this.expense
+  });
+
+  final Expense expense;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color.fromARGB(255, 220, 203, 161),
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExpenseItemHeader(expense: expense),
+          Container(
+            height: 300.0,
+            child: ListView.separated(
+              itemBuilder: (BuildContext context, int index) {
+                return Text(expense.contributions[index].contributor.contributorName);
+              }, 
+              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
+              itemCount: expense.contributions.length)
+          ),
+        ],
+      ));
+  }
+}
+
+class ExpenseItemHeader extends StatelessWidget {
+  const ExpenseItemHeader({
+    super.key,
+    required this.expense,
+  });
+
+  final Expense expense;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(expense.expenseName),
+        const Spacer(),
+        Row(
+          children: [
+            SizedBox(width: 120.0, child: Text("Total Cost: ${expense.totalCost.toString()}")),
+            SizedBox(width: 5.0,),
+            IconButton(
+              onPressed: () {
+                print("delete");
+              },
+              icon: const Icon(
+                Icons.delete,
+              ),
+              color: Colors.red,
+              iconSize: 16.0,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 20.0, minHeight: 20.0),
+            ),
+          ],
+        )
       ],
     );
   }
