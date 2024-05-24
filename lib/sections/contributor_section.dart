@@ -90,9 +90,10 @@ class ContributorListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100.0,
+      // height: 100.0,
       child: Consumer<AppState>(builder: (context, appState, child) {
         return ListView.separated(
+            shrinkWrap: true,
             itemBuilder: (BuildContext context, int index) {
               return ContributorItem(contributor: appState.contributors[index],);
             },
