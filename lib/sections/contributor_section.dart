@@ -4,12 +4,7 @@ import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
 
 class ContributorSection extends StatelessWidget {
-  const ContributorSection({
-    super.key,
-    required this.deleteContributor,
-  });
-
-  final void Function(String) deleteContributor;
+  const ContributorSection({super.key,});
 
   @override
   Widget build(BuildContext context) {

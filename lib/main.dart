@@ -37,29 +37,10 @@ class ExpenseContributorApp extends StatefulWidget {
 }
 
 class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
-  final List<String> contributors = [];
   final List<String> expenses = [];
 
-  final TextEditingController _contributorController = TextEditingController();
   final TextEditingController _expenseController = TextEditingController();
 
-  void _addContributor() {
-    final String contributorName = _contributorController.text;
-    if (contributorName.isNotEmpty) {
-      setState(() {
-        contributors.add(contributorName);
-      });
-      _contributorController.clear();
-    }
-  }
-
-  void _deleteContributor(String contributor) {
-    if (contributors.contains(contributor)) {
-      setState(() {
-        contributors.remove(contributor);
-      });
-    }
-  }
 
   void _addExpense() {
     final String expenseName = _expenseController.text;
@@ -91,10 +72,8 @@ class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
         padding: const EdgeInsets.all(30.0),
         child: Column(
           children: [
-            ContributorSection(deleteContributor: _deleteContributor,),
-            const SizedBox(
-              height: 20.0,
-            ),
+            const ContributorSection(),
+            const SizedBox(height: 20.0,),
             ExpenseSection(
                 expenses: expenses,
                 addExpense: _addExpense,
