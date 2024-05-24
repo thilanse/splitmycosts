@@ -71,4 +71,9 @@ class AppState extends ChangeNotifier{
     _expenses.removeAt(index);
     notifyListeners();
   }
+
+  void updateContributionAmount(int expenseIndex, int contributionIndex, double newAmount) {
+    _expenses[expenseIndex].contributions[contributionIndex].updateContributedAmount(newAmount);
+    notifyListeners();
+  }
 }

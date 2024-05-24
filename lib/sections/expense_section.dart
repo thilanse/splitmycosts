@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
@@ -134,7 +136,7 @@ class ExpenseItem extends StatelessWidget {
         children: [
           ExpenseItemHeader(expense: expense, index: index,),
           const SizedBox(height: 10.0,),
-          ExpenseItemContributionSection(expense: expense),
+          ExpenseItemContributionSection(expense: expense, expenseIndex: index),
         ],
       ));
   }
@@ -185,9 +187,11 @@ class ExpenseItemContributionSection extends StatelessWidget {
   const ExpenseItemContributionSection({
     super.key,
     required this.expense,
+    required this.expenseIndex,
   });
 
   final Expense expense;
+  final int expenseIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +202,11 @@ class ExpenseItemContributionSection extends StatelessWidget {
         child: ListView.separated(
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
-            return ContributionItem(contribution: expense.contributions[index]);
+            return ContributionItem(
+              expenseIndex: expenseIndex, 
+              contributionIndex: index, 
+              contribution: expense.contributions[index]
+            );
           }, 
           separatorBuilder: (BuildContext context, int index) {
             return const Divider(
@@ -214,13 +222,37 @@ class ExpenseItemContributionSection extends StatelessWidget {
   }
 }
 
-class ContributionItem extends StatelessWidget {
+class ContributionItem extends StatefulWidget {
   const ContributionItem({
     super.key,
+    required this.expenseIndex,
+    required this.contributionIndex,
     required this.contribution,
   });
 
+  final int expenseIndex;
+  final int contributionIndex;
   final Contribution contribution;
+
+  @override
+  State<ContributionItem> createState() => _ContributionItemState();
+}
+
+class _ContributionItemState extends State<ContributionItem> {
+
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.contribution.contributedAmount.toString());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,9 +260,34 @@ class ContributionItem extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: Row(
         children: [
-          Text(contribution.contributor.contributorName),
-          Spacer(),
-          Text(contribution.contributedAmount.toString())
+          Expanded(child: Text(widget.contribution.contributor.contributorName)),
+          Container(
+            width: 80.0,
+            // color: Colors.red,
+            child: TextField(
+              controller: _controller,
+              onChanged: (_) {
+                var appState = context.read<AppState>();
+                late double contributionAmount;
+                if (_controller.text.isEmpty) {
+                  contributionAmount = 0.0;
+                  _controller.text = "0";
+                } else {
+                  contributionAmount = double.parse(_controller.text);
+                }
+                appState.updateContributionAmount(widget.expenseIndex, widget.contributionIndex, contributionAmount);
+              },
+              style: Theme.of(context).textTheme.bodyMedium,
+              textDirection: TextDirection.rtl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.all(10.0),
+                border: InputBorder.none
+              ),
+            ),
+          ),
         ],
       )
     );
