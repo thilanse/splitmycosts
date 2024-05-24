@@ -15,12 +15,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: MultiProvider(providers: [
-            ChangeNotifierProvider(
-              create: (context) => AppState(),
-            ),
-          ], child: const ExpenseContributorApp()),
+        body: SingleChildScrollView(
+          child: Center(
+            child: MultiProvider(providers: [
+              ChangeNotifierProvider(
+                create: (context) => AppState(),
+              ),
+            ], child: const ExpenseContributorApp()),
+          ),
         ),
       ),
     );
@@ -79,6 +81,7 @@ class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
                 addExpense: _addExpense,
                 removeExpense: _removeExpense,
                 controller: _expenseController),
+            const SizedBox(height: 200.0,)
           ],
         ),
       ),

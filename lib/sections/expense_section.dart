@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
+import 'package:splitmycosts/models/contribution.dart';
 import 'package:splitmycosts/models/expense.dart';
 
 class ExpenseSection extends StatelessWidget {
@@ -25,12 +27,66 @@ class ExpenseSection extends StatelessWidget {
         ExpenseDetailsSection(),
         SizedBox(height: 10.0,),
         ExpenseAddSection(),
-        SizedBox(height: 10.0,),
+        SizedBox(height: 20.0,),
         ExpenseListSection(),
       ],
     );
   }
 }
+
+class ExpenseDetailsSection extends StatelessWidget {
+  const ExpenseDetailsSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Expenses"),
+        SizedBox(height: 10.0,),
+        Text("Add all expenses for the event. For each expense, you can add the contributed amount by each contributor. The checkboxes denote if the contributor took part in the expense. If someone opted out of participating in an expense, you can untick the checkbox for that contributor."),
+      ],
+    );
+  }
+}
+
+class ExpenseAddSection extends StatefulWidget {
+  const ExpenseAddSection({super.key,});
+
+  @override
+  State<ExpenseAddSection> createState() => _ExpenseAddSectionState();
+}
+
+class _ExpenseAddSectionState extends State<ExpenseAddSection> {
+  
+  final _controller = TextEditingController();
+  final String inputLabel = "Add expense...";
+  String? errorMessage;
+
+  void addExpense(BuildContext context) {
+    if (_controller.text.trim().isNotEmpty) {
+      setState(() {
+        var appState = context.read<AppState>();
+        final String expenseName = _controller.text;
+        appState.addExpense(expenseName);
+        _controller.clear();
+      });
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return AddItemSection(
+      inputLabel: inputLabel,
+      controller: _controller,
+      addBtnCallback: addExpense,
+      errorMessage: errorMessage
+      );
+  }
+}
+
 
 class ExpenseListSection extends StatelessWidget {
   const ExpenseListSection({
@@ -39,17 +95,20 @@ class ExpenseListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: Consumer<AppState>(builder: (context, appState, child) {
-        return ListView.separated(
-          itemBuilder: (BuildContext context, int index) {
-            return ExpenseItem(expense: appState.expenses[index],);
-          }, 
-          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
-          itemCount: appState.expenses.length
-          );
-      },),
+    return Center(
+      child: SizedBox(
+        width: 400.0,
+        child: Consumer<AppState>(builder: (context, appState, child) {
+          return ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return ExpenseItem(expense: appState.expenses[index],);
+            }, 
+            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
+            itemCount: appState.expenses.length
+            );
+        },),
+      ),
     );
   }
 }
@@ -68,18 +127,12 @@ class ExpenseItem extends StatelessWidget {
       color: Color.fromARGB(255, 220, 203, 161),
       padding: EdgeInsets.all(10.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ExpenseItemHeader(expense: expense),
-          Container(
-            height: 300.0,
-            child: ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                return Text(expense.contributions[index].contributor.contributorName);
-              }, 
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10,), 
-              itemCount: expense.contributions.length)
-          ),
+          const SizedBox(height: 10.0,),
+          ExpenseItemContributionSection(expense: expense),
         ],
       ));
   }
@@ -122,56 +175,59 @@ class ExpenseItemHeader extends StatelessWidget {
   }
 }
 
-class ExpenseDetailsSection extends StatelessWidget {
-  const ExpenseDetailsSection({
+
+class ExpenseItemContributionSection extends StatelessWidget {
+  const ExpenseItemContributionSection({
     super.key,
+    required this.expense,
   });
+
+  final Expense expense;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Expenses"),
-        SizedBox(height: 10.0,),
-        Text("Add all expenses for the event. For each expense, you can add the contributed amount by each contributor. The checkboxes denote if the contributor took part in the expense. If someone opted out of participating in an expense, you can untick the checkbox for that contributor."),
-      ],
+    return Flexible(
+      child: Container(
+        width: 400.0,
+        color: const Color.fromARGB(255, 211, 200, 184),
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            return ContributionItem(contribution: expense.contributions[index]);
+          }, 
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(
+              color: Color.fromARGB(255, 153, 153, 147), 
+              height: 0.0,
+              indent: 5.0,
+              endIndent: 5.0,
+            );
+          }, 
+          itemCount: expense.contributions.length)
+      ),
     );
   }
 }
 
-class ExpenseAddSection extends StatefulWidget {
-  const ExpenseAddSection({super.key,});
+class ContributionItem extends StatelessWidget {
+  const ContributionItem({
+    super.key,
+    required this.contribution,
+  });
 
-  @override
-  State<ExpenseAddSection> createState() => _ExpenseAddSectionState();
-}
+  final Contribution contribution;
 
-class _ExpenseAddSectionState extends State<ExpenseAddSection> {
-  
-  final _controller = TextEditingController();
-  final String inputLabel = "Add expense...";
-  String? errorMessage;
-
-  void addExpense(BuildContext context) {
-    if (_controller.text.trim().isNotEmpty) {
-      setState(() {
-        // var appState = context.read<AppState>();
-        // final String contributorName = _controller.text;
-        // errorMessage = appState.addContributor(contributorName);
-        _controller.clear();
-      });
-    }
-  }
-  
   @override
   Widget build(BuildContext context) {
-    return AddItemSection(
-      inputLabel: inputLabel,
-      controller: _controller,
-      addBtnCallback: addExpense,
-      errorMessage: errorMessage
-      );
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          Text(contribution.contributor.contributorName),
+          Spacer(),
+          Text(contribution.contributedAmount.toString())
+        ],
+      )
+    );
   }
 }
-
