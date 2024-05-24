@@ -33,6 +33,7 @@ class AppState extends ChangeNotifier{
     Contributor contributor = Contributor(contributorNameFormatted);
     _contributors.add(contributor);
     addNewContributorToAllExpenses(contributor);
+    updateContributorTotalCosts();
     notifyListeners();
     return null;
   }
@@ -40,6 +41,7 @@ class AppState extends ChangeNotifier{
   void removeContributor(String contributorName) {
     _contributors.removeWhere((c) => c.contributorName == contributorName);
     removeContributorFromAllExpenses(contributorName);
+    updateContributorTotalCosts();
     notifyListeners();
   }
 
@@ -63,17 +65,18 @@ class AppState extends ChangeNotifier{
       expense.addContribution(contribution);
     }
     _expenses.add(expense);
+    updateContributorTotalCosts();
     notifyListeners();
   }
 
   void removeExpenseByIndex(int index) {
     _expenses[index].removeAllContributions();
     _expenses.removeAt(index);
+    updateContributorTotalCosts();
     notifyListeners();
   }
 
-  void updateContributionAmount(int expenseIndex, int contributionIndex, double newAmount) {
-    _expenses[expenseIndex].contributions[contributionIndex].updateContributedAmount(newAmount);
+  void updateContributorTotalCosts(){
     for(Contributor contributor in _contributors) {
       contributor.resetTotalCost();
     }
@@ -84,6 +87,17 @@ class AppState extends ChangeNotifier{
         }
       }
     }
+  }
+
+  void updateContributionAmount(int expenseIndex, int contributionIndex, double newAmount) {
+    _expenses[expenseIndex].contributions[contributionIndex].updateContributedAmount(newAmount);
+    updateContributorTotalCosts();
+    notifyListeners();
+  }
+
+  void toggleContribution(int expenseIndex, int contributionIndex) {
+    _expenses[expenseIndex].contributions[contributionIndex].toggleHasContributed();
+    updateContributorTotalCosts();
     notifyListeners();
   }
 }

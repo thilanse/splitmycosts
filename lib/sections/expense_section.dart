@@ -263,11 +263,13 @@ class ContributionItem extends StatefulWidget {
 class _ContributionItemState extends State<ContributionItem> {
 
   late TextEditingController _controller;
+  late bool checkBoxState;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.contribution.contributedAmount.toString());
+    checkBoxState = widget.contribution.hasContributed;
   }
 
   @override
@@ -276,17 +278,45 @@ class _ContributionItemState extends State<ContributionItem> {
     super.dispose();
   }
 
+  void toggleHasContributed(bool? value) {
+    setState(() {
+      checkBoxState = value!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: Row(
         children: [
-          Expanded(child: Text(widget.contribution.contributor.contributorName)),
+          Checkbox(
+            value: checkBoxState, 
+            onChanged: (value){
+              setState(() {
+                checkBoxState = value!;
+                // widget.contribution.toggleHasContributed();
+                });
+              var app_state = context.read<AppState>();
+              app_state.toggleContribution(widget.expenseIndex, widget.contributionIndex);
+              // widget.contribution.toggleHasContributed();
+              _controller.text = "0";
+            }
+          ),
+          Expanded(
+            child: Text(
+              style: TextStyle(
+                decoration:
+                    checkBoxState ? TextDecoration.none : TextDecoration.lineThrough,
+              ),
+              widget.contribution.contributor.contributorName
+              )
+              ),
           Container(
             width: 80.0,
             // color: Colors.red,
             child: TextField(
+              enabled: checkBoxState,
               controller: _controller,
               onChanged: (_) {
                 var appState = context.read<AppState>();
