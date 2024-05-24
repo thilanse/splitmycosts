@@ -63,14 +63,14 @@ class _ContributorAddSectionState extends State<ContributorAddSection> {
   String? errorMessage;
 
   void addContributor(BuildContext context) {
-    var appState = context.read<AppState>();
-    final String contributorName = _controller.text;
-
-    setState(() {
-      errorMessage = appState.addContributor(contributorName);
-    });
-    
-    _controller.clear();
+    if (_controller.text.trim().isNotEmpty) {
+      setState(() {
+        var appState = context.read<AppState>();
+        final String contributorName = _controller.text;
+        errorMessage = appState.addContributor(contributorName);
+        _controller.clear();
+      });
+    }
   }
 
   @override

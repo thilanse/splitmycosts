@@ -8,13 +8,16 @@ class AppState extends ChangeNotifier{
   List<Contributor> get contributors => _contributors;
 
   String? addContributor(String contributorName) {
-    bool alreadyExists = _contributors.any((c) => c.contributorName == contributorName);
-    
+
+    String contributorNameFormatted = contributorName.toLowerCase().trim();
+
+    bool alreadyExists = _contributors.any((c) => c.contributorName == contributorNameFormatted);
+
     if (alreadyExists){
       return "$contributorName already added!";
     }
 
-    Contributor contributor = Contributor(contributorName: contributorName);
+    Contributor contributor = Contributor(contributorName: contributorNameFormatted);
     _contributors.add(contributor);
     notifyListeners();
     return null;
