@@ -112,9 +112,16 @@ class AddItemSection extends StatefulWidget {
 }
 
 class _AddItemSectionState extends State<AddItemSection> {
-
   final _controller = TextEditingController();
   final double borderRadius = 5.0;
+
+  void addItem(BuildContext context) {
+    var appState = context.read<AppState>();
+    final String contributorName = _controller.text;
+    Contributor contributor = Contributor(contributorName: contributorName);
+    appState.addContributor(contributor);
+    _controller.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,9 +136,7 @@ class _AddItemSectionState extends State<AddItemSection> {
             ),
             child: TextField(
               controller: _controller,
-              onSubmitted: (_) {
-                widget.addBtnCallback();
-              },
+              onSubmitted: (_) {addItem(context);},
               style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
                 hintText: widget.inputLabel,
@@ -148,14 +153,7 @@ class _AddItemSectionState extends State<AddItemSection> {
           width: 10.0,
         ),
         FilledButton(
-          onPressed: () {
-            var appState = context.read<AppState>();
-            final String contributorName = _controller.text;
-            Contributor contributor = Contributor(contributorName: contributorName);
-            appState.addContributor(contributor);
-          
-            // widget.addBtnCallback();
-          },
+          onPressed: () {addItem(context);},
           style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
                   borderRadius:
