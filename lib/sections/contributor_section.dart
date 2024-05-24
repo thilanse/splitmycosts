@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
+import 'package:splitmycosts/models/contributor.dart';
 
 class ContributorSection extends StatelessWidget {
   const ContributorSection({super.key,});
@@ -89,7 +90,7 @@ class ContributorListSection extends StatelessWidget {
       child: Consumer<AppState>(builder: (context, appState, child) {
         return ListView.separated(
             itemBuilder: (BuildContext context, int index) {
-              return ContributorItem(name: appState.contributors[index].contributorName,);
+              return ContributorItem(contributor: appState.contributors[index],);
             },
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: 5.0),
@@ -102,10 +103,10 @@ class ContributorListSection extends StatelessWidget {
 class ContributorItem extends StatelessWidget {
   const ContributorItem({
     super.key,
-    required this.name,
+    required this.contributor,
   });
 
-  final String name;
+  final Contributor contributor;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +115,7 @@ class ContributorItem extends StatelessWidget {
         IconButton(
           onPressed: () {
             var appState = context.read<AppState>();
-            appState.removeContributor(name);
+            appState.removeContributor(contributor.contributorName);
           },
           icon: const Icon(
             Icons.delete,
@@ -125,7 +126,9 @@ class ContributorItem extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 20.0, minHeight: 20.0),
         ),
         const SizedBox(width: 10.0),
-        Text(name),
+        Text(contributor.contributorName),
+        const Spacer(),
+        Text("Total Spent: ${contributor.totalSpent}"),
       ],
     );
   }
