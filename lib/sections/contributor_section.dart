@@ -66,6 +66,10 @@ class _ContributorAddSectionState extends State<ContributorAddSection> {
         errorMessage = appState.addContributor(contributorName);
         _controller.clear();
       });
+    } else {
+      setState(() {
+        errorMessage = null;
+      });
     }
   }
 
