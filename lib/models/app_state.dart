@@ -32,17 +32,27 @@ class AppState extends ChangeNotifier{
 
     Contributor contributor = Contributor(contributorNameFormatted);
     _contributors.add(contributor);
+    addNewContributorToAllExpenses(contributor);
     notifyListeners();
     return null;
   }
 
   void removeContributor(String contributorName) {
-    for (Contributor contributor in _contributors){
-      if (contributor.contributorName == contributorName){
-        _contributors.remove(contributor);
-        notifyListeners();
-        break;
-      }
+    _contributors.removeWhere((c) => c.contributorName == contributorName);
+    removeContributorFromAllExpenses(contributorName);
+    notifyListeners();
+  }
+
+  void addNewContributorToAllExpenses(Contributor contributor) {
+    for (Expense expense in _expenses) {
+      Contribution contribution = Contribution(contributor);
+      expense.addContribution(contribution);
+    }
+  }
+
+  void removeContributorFromAllExpenses(String contributorName) {
+    for (Expense expense in _expenses) {
+      expense.contributions.removeWhere((contribution) => contribution.contributor.contributorName == contributorName);
     }
   }
 
