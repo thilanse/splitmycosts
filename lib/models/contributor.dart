@@ -5,10 +5,9 @@ class Contributor {
   final String contributorName;
   double totalSpent = 0.0;
   double totalCost = 0.0;
-  double intermediateTransfer = 0.0; // this value is set only when a creditor does a transfer to another creditor
-  double totalPaid = 0.0;
 
   List<Transfer> receivedTransfer = [];
+  List<double> payments = [];
 
   Contributor(this.contributorName);
 
@@ -27,21 +26,22 @@ class Contributor {
   void receiveTransfer(Contributor contributor, double amount){
     Transfer transfer = Transfer(contributor, amount);
     receivedTransfer.add(transfer);
-  }
-
-  void recordIntermediateTransfer(double amount) {
-    intermediateTransfer = amount;
+    contributor.recordPayment(amount);
   }
 
   void recordPayment(double amount) {
-    totalPaid = amount;
+    payments.add(amount);
   }
-
-  double get totalToReceive => totalSpent - totalCost;
-
-  double get totalToPay => totalCost - totalSpent + totalPaid;
 
   double get totalReceived => receivedTransfer.fold(0, (previousValue, element) => previousValue + element.amount);
 
-  double get totalLeft => totalSpent - totalReceived + intermediateTransfer;
+  double get totalPaid => (payments.length > 0)? payments.reduce((a, b) => a + b): 0.0;
+
+  double get totalToReceive => totalSpent - totalCost - totalReceived + totalPaid;
+
+  double get totalToPay => totalCost - totalSpent - totalPaid;
+
+  bool get canPay => totalToPay > 0;
+
+  bool get canReceive => totalToReceive > 0;
 }
