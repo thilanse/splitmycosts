@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:splitmycosts/common/add_item.dart';
 import 'package:splitmycosts/models/app_state.dart';
@@ -9,17 +7,7 @@ import 'package:splitmycosts/models/contribution.dart';
 import 'package:splitmycosts/models/expense.dart';
 
 class ExpenseSection extends StatelessWidget {
-  const ExpenseSection(
-      {super.key,
-      required this.expenses,
-      required this.addExpense,
-      required this.removeExpense,
-      required this.controller});
-
-  final List<String> expenses;
-  final void Function() addExpense;
-  final void Function(String expense) removeExpense;
-  final TextEditingController controller;
+  const ExpenseSection({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -128,8 +116,8 @@ class ExpenseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 220, 203, 161),
-      padding: EdgeInsets.all(10.0),
+      color: const Color.fromARGB(255, 220, 203, 161),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,8 +285,8 @@ class _ContributionItemState extends State<ContributionItem> {
                 checkBoxState = value!;
                 // widget.contribution.toggleHasContributed();
                 });
-              var app_state = context.read<AppState>();
-              app_state.toggleContribution(widget.expenseIndex, widget.contributionIndex);
+              var appState = context.read<AppState>();
+              appState.toggleContribution(widget.expenseIndex, widget.contributionIndex);
               // widget.contribution.toggleHasContributed();
               _controller.text = "0";
             }
@@ -312,9 +300,8 @@ class _ContributionItemState extends State<ContributionItem> {
               widget.contribution.contributor.contributorName
               )
               ),
-          Container(
+          SizedBox(
             width: 80.0,
-            // color: Colors.red,
             child: TextField(
               enabled: checkBoxState,
               controller: _controller,
@@ -333,7 +320,7 @@ class _ContributionItemState extends State<ContributionItem> {
               textDirection: TextDirection.rtl,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 isDense: true,
                 contentPadding: EdgeInsets.all(10.0),
                 border: InputBorder.none

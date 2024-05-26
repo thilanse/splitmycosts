@@ -39,28 +39,6 @@ class ExpenseContributorApp extends StatefulWidget {
 }
 
 class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
-  final List<String> expenses = [];
-
-  final TextEditingController _expenseController = TextEditingController();
-
-
-  void _addExpense() {
-    final String expenseName = _expenseController.text;
-    if (expenseName.isNotEmpty) {
-      setState(() {
-        expenses.add(expenseName);
-      });
-      _expenseController.clear();
-    }
-  }
-
-  void _removeExpense(String expense) {
-    if (expenses.contains(expense)) {
-      setState(() {
-        expenses.remove(expense);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,18 +48,14 @@ class _ExpenseContributorAppState extends State<ExpenseContributorApp> {
         minWidth: 400.0,
         maxWidth: 600.0,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(30.0),
+      child: const Padding(
+        padding: EdgeInsets.all(30.0),
         child: Column(
           children: [
-            const ContributorSection(),
-            const SizedBox(height: 20.0,),
-            ExpenseSection(
-                expenses: expenses,
-                addExpense: _addExpense,
-                removeExpense: _removeExpense,
-                controller: _expenseController),
-            const SizedBox(height: 200.0,)
+            ContributorSection(),
+            SizedBox(height: 20.0,),
+            ExpenseSection(),
+            SizedBox(height: 200.0,)
           ],
         ),
       ),
