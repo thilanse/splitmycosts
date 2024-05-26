@@ -9,6 +9,8 @@ class Contributor {
   List<Transfer> receivedTransfer = [];
   List<double> payments = [];
 
+  bool multipleTransfers = false;
+
   Contributor(this.contributorName);
 
   void updateContributedAmount(double oldAmount, double newAmount) {
@@ -31,6 +33,10 @@ class Contributor {
 
   void recordPayment(double amount) {
     payments.add(amount);
+  }
+
+  void allowMultipleTransfers() {
+    multipleTransfers = true;
   }
 
   double get totalReceived => receivedTransfer.fold(0, (previousValue, element) => previousValue + element.amount);

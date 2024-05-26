@@ -25,6 +25,9 @@ class ExpenseSettler{
     separateDebtorsFromCreditors(contributors);
     sortDebtorsAndCreditors();
 
+    // Contributor? multiTransferDebtor = debtors.firstWhere((element) => element.multipleTransfers, orElse: () => null as Contributor?,);
+    // debtors.remove(multiTransferDebtor);
+
     // perform straight forward transactions from debtors to creditors
     for(Contributor creditor in creditors) {
       for(Contributor debtor in debtors) {
@@ -37,6 +40,16 @@ class ExpenseSettler{
     // remove settled transfers
     creditors.removeWhere((element) => element.totalToReceive == 0.0);
     debtors.removeWhere((element) => element.totalToPay == 0.0);
+
+    // debtors.insert(0, multiTransferDebtor);
+
+    for(Contributor creditor in creditors) {
+      for(Contributor debtor in debtors) {
+        if (debtor.canPay && creditor.canReceive) {
+          creditor.receiveTransfer(debtor, creditor.totalToReceive);
+        }
+      }
+    }
 
     print(creditors);
   }

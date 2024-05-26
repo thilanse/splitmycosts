@@ -79,6 +79,7 @@ void main() {
       var contributor5 = Contributor('Thilan');
       contributor5.updateContributedAmount(0, 0); // Total spent: 30
       contributor5.updateTotalCost(4685); // Total cost: 150
+      // contributor5.allowMultipleTransfers();
 
       var contributor6 = Contributor('Tharuka');
       contributor6.updateContributedAmount(0, 0); // Total spent: 100
